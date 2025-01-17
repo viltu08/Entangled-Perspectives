@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,21 +11,23 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
             background-color: #f9f9f9;
+            color: #333;
         }
 
         /* Header section styling */
         .header-container {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 20px;
             background-color: #f0f0f0;
-            z-index: 10;
+            border-bottom: 2px solid #ddd;
         }
 
         .header {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #333;
         }
@@ -32,7 +35,7 @@
         /* Button styling for reset */
         .reset-button-container {
             display: flex;
-            justify-content: flex-start; /* Align the button to the left */
+            justify-content: flex-start;
             padding: 10px;
         }
 
@@ -52,9 +55,9 @@
 
         /* SVG container styling */
         .svg-container {
-            width: 100%; /* Ensure the container uses the full screen width */
-            height: calc(100vh); /* Full height minus header and button */
-            overflow: auto; /* Enable scrolling for large content */
+            width: 100%;
+            height: calc(100vh);
+            overflow: auto;
         }
 
         /* Tooltip styling */
@@ -87,8 +90,29 @@
             stroke-width: 2;
             stroke-dasharray: 2, 2;
         }
+
+        /* Typography for node-texts */
+        #node-texts {
+            font-size: 12px;
+            line-height: 1.8;
+            padding: 20px;
+            color: #444;
+        }
+
+        #node-texts h1,
+        #node-texts h2 {
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        #node-texts p {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            text-indent: 0;
+        }
     </style>
 </head>
+
 <body>
     <!-- Header section -->
     <div class="header-container">
@@ -102,7 +126,10 @@
 
     <!-- Text content for nodes -->
     <div id="node-texts" style="display: none;">
-        <div data-node="origin-0">Query 1</div>
+        <div data-node="origin-0">
+ Difference between “Complex” and “Complicated”
+        </div>
+
         <div data-node="origin-0-branch-0">Q1.B1</div>
         <div data-node="origin-0-branch-1">Q1.B2</div>
         <div data-node="origin-1">Query 2</div>
@@ -118,148 +145,150 @@
     <!-- Tooltip for showing additional information -->
     <div id="tooltip" class="tooltip"></div>
 
-   <script>
-    // Set up the SVG canvas dimensions
-    const svgContainer = document.getElementById('svgCanvas');
-    const svgWidth = window.innerWidth; // Dynamically fit the screen width
-    const svgHeight = 1000; // Fixed height for scrolling content
+    <script>
+        // Set up the SVG canvas dimensions
+        const svgContainer = document.getElementById('svgCanvas');
+        const svgWidth = window.innerWidth; // Dynamically fit the screen width
+        const svgHeight = 1000; // Fixed height for scrolling content
 
-    // Create an SVG element and set its dimensions
-    const svg = d3.select(svgContainer)
-        .attr('width', svgWidth)
-        .attr('height', svgHeight);
+        // Create an SVG element and set its dimensions
+        const svg = d3.select(svgContainer)
+            .attr('width', svgWidth)
+            .attr('height', svgHeight);
 
-    // Center coordinates for the canvas
-    const centerX = svgWidth / 2;
-    const centerY = svgHeight / 2;
+        // Center coordinates for the canvas
+        const centerX = svgWidth / 2;
+        const centerY = svgHeight / 2;
 
-    // Define tooltip for displaying node details
-    const tooltip = d3.select('#tooltip');
+        // Define tooltip for displaying node details
+        const tooltip = d3.select('#tooltip');
 
-    // Collect text content from HTML
-    const nodeTexts = Array.from(document.querySelectorAll('#node-texts div'));
+        // Collect text content from HTML
+        const nodeTexts = Array.from(document.querySelectorAll('#node-texts div'));
 
-    // Organize text content for nodes
-    const textMap = nodeTexts.reduce((acc, node) => {
-        acc[node.dataset.node] = node.textContent;
-        return acc;
-    }, {});
+        // Organize text content for nodes (preserving HTML structure)
+        const textMap = nodeTexts.reduce((acc, node) => {
+            acc[node.dataset.node] = node.innerHTML; // Use innerHTML to preserve formatting
+            return acc;
+        }, {});
 
-    // Generate 20 origin points and their branches
-    const originPoints = Array.from({ length: 20 }, (_, i) => ({
-        id: `origin-${i}`,
-        x: centerX,
-        y: centerY - 400 + i * 40,
-        branches: Array.from({ length: 2 }, (_, j) => ({
-            id: `origin-${i}-branch-${j}`,
-            x: centerX + (Math.random() * 300 - 150),
-            y: centerY - 400 + i * 40 + (Math.random() * 200 - 100)
-        }))
-    }));
+        // Generate 20 origin points and their branches
+        const originPoints = Array.from({ length: 20 }, (_, i) => ({
+            id: `origin-${i}`,
+            x: centerX,
+            y: centerY - 400 + i * 40,
+            branches: Array.from({ length: 2 }, (_, j) => ({
+                id: `origin-${i}-branch-${j}`,
+                x: centerX + (Math.random() * 300 - 150),
+                y: centerY - 400 + i * 40 + (Math.random() * 200 - 100)
+            }))
+        }));
 
-    // Store original positions for resetting
-    const originalPositions = JSON.parse(JSON.stringify(originPoints));
+        // Store original positions for resetting
+        const originalPositions = JSON.parse(JSON.stringify(originPoints));
 
-    // Draw lines first to ensure they are rendered below other elements
-    originPoints.forEach(origin => {
-        origin.branches.forEach(branch => {
-            svg.append('line')
-                .attr('id', `line-${branch.id}`)
-                .attr('class', 'line')
-                .attr('x1', origin.x)
-                .attr('y1', origin.y)
-                .attr('x2', branch.x)
-                .attr('y2', branch.y);
-        });
-    });
-
-    // Draw each origin point and its branches
-    originPoints.forEach(origin => {
-        const group = svg.append('g').attr('class', 'origin-group');
-
-        // Draw the origin circle
-        group.append('circle')
-            .attr('id', origin.id)
-            .attr('class', 'origin')
-            .attr('cx', origin.x)
-            .attr('cy', origin.y)
-            .attr('r', 8)
-            .call(d3.drag()
-                .on('drag', function (event) {
-                    const x = Math.max(0, Math.min(svgWidth, event.x));
-                    const y = Math.max(0, Math.min(svgHeight, event.y));
-                    d3.select(this).attr('cx', x).attr('cy', y);
-                    origin.branches.forEach(branch => {
-                        d3.select(`#line-${branch.id}`)
-                            .attr('x1', x)
-                            .attr('y1', y);
-                    });
-                }))
-            .on('mouseover', (event) => {
-                tooltip.style('display', 'block')
-                    .style('left', `${event.pageX + 10}px`)
-                    .style('top', `${event.pageY + 10}px`)
-                    .text(textMap[origin.id] || 'No text available');
-            })
-            .on('mouseout', () => {
-                tooltip.style('display', 'none');
+        // Draw lines first to ensure they are rendered below other elements
+        originPoints.forEach(origin => {
+            origin.branches.forEach(branch => {
+                svg.append('line')
+                    .attr('id', `line-${branch.id}`)
+                    .attr('class', 'line')
+                    .attr('x1', origin.x)
+                    .attr('y1', origin.y)
+                    .attr('x2', branch.x)
+                    .attr('y2', branch.y);
             });
+        });
 
-        // Draw branch nodes
-        origin.branches.forEach(branch => {
-            svg.append('circle')
-                .attr('id', branch.id)
-                .attr('class', 'node')
-                .attr('cx', branch.x)
-                .attr('cy', branch.y)
-                .attr('r', 4)
+        // Draw each origin point and its branches
+        originPoints.forEach(origin => {
+            const group = svg.append('g').attr('class', 'origin-group');
+
+            // Draw the origin circle
+            group.append('circle')
+                .attr('id', origin.id)
+                .attr('class', 'origin')
+                .attr('cx', origin.x)
+                .attr('cy', origin.y)
+                .attr('r', 8)
                 .call(d3.drag()
                     .on('drag', function (event) {
                         const x = Math.max(0, Math.min(svgWidth, event.x));
                         const y = Math.max(0, Math.min(svgHeight, event.y));
                         d3.select(this).attr('cx', x).attr('cy', y);
-                        d3.select(`#line-${branch.id}`)
-                            .attr('x2', x)
-                            .attr('y2', y);
+                        origin.branches.forEach(branch => {
+                            d3.select(`#line-${branch.id}`)
+                                .attr('x1', x)
+                                .attr('y1', y);
+                        });
                     }))
                 .on('mouseover', (event) => {
                     tooltip.style('display', 'block')
                         .style('left', `${event.pageX + 10}px`)
                         .style('top', `${event.pageY + 10}px`)
-                        .text(textMap[branch.id] || 'No text available');
+                        .html(textMap[origin.id] || '<em>No text available</em>'); // Render formatted text
                 })
                 .on('mouseout', () => {
                     tooltip.style('display', 'none');
                 });
-        });
-    });
 
-    // Reset positions to their original states
-    d3.select('#resetButton').on('click', () => {
-        originPoints.forEach((origin, originIndex) => {
-            const originalOrigin = originalPositions[originIndex];
-
-            // Reset origin node position
-            svg.select(`#${originalOrigin.id}`)
-                .attr('cx', originalOrigin.x)
-                .attr('cy', originalOrigin.y);
-
-            originalOrigin.branches.forEach((branch) => {
-                // Reset branch line positions
-                svg.select(`#line-${branch.id}`)
-                    .attr('x1', originalOrigin.x)
-                    .attr('y1', originalOrigin.y)
-                    .attr('x2', branch.x)
-                    .attr('y2', branch.y);
-
-                // Reset branch node positions
-                svg.select(`#${branch.id}`)
+            // Draw branch nodes
+            origin.branches.forEach(branch => {
+                svg.append('circle')
+                    .attr('id', branch.id)
+                    .attr('class', 'node')
                     .attr('cx', branch.x)
-                    .attr('cy', branch.y);
+                    .attr('cy', branch.y)
+                    .attr('r', 4)
+                    .call(d3.drag()
+                        .on('drag', function (event) {
+                            const x = Math.max(0, Math.min(svgWidth, event.x));
+                            const y = Math.max(0, Math.min(svgHeight, event.y));
+                            d3.select(this).attr('cx', x).attr('cy', y);
+                            d3.select(`#line-${branch.id}`)
+                                .attr('x2', x)
+                                .attr('y2', y);
+                        }))
+                    .on('mouseover', (event) => {
+                        tooltip.style('display', 'block')
+                            .style('left', `${event.pageX + 10}px`)
+                            .style('top', `${event.pageY + 10}px`)
+                            .html(textMap[branch.id] || '<em>No text available</em>'); // Render formatted text
+                    })
+                    .on('mouseout', () => {
+                        tooltip.style('display', 'none');
+                    });
             });
         });
-    });
-</script>
+
+        // Reset positions to their original states
+        d3.select('#resetButton').on('click', () => {
+            originPoints.forEach((origin, originIndex) => {
+                const originalOrigin = originalPositions[originIndex];
+
+                // Reset origin node position
+                svg.select(`#${originalOrigin.id}`)
+                    .attr('cx', originalOrigin.x)
+                    .attr('cy', originalOrigin.y);
+
+                originalOrigin.branches.forEach((branch) => {
+                    // Reset branch line positions
+                    svg.select(`#line-${branch.id}`)
+                        .attr('x1', originalOrigin.x)
+                        .attr('y1', originalOrigin.y)
+                        .attr('x2', branch.x)
+                        .attr('y2', branch.y);
+
+                    // Reset branch node positions
+                    svg.select(`#${branch.id}`)
+                        .attr('cx', branch.x)
+                        .attr('cy', branch.y);
+                });
+            });
+        });
+
+    </script>
 
 </body>
+
 </html>
