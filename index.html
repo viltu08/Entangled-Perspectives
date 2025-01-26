@@ -161,43 +161,29 @@
             animation: pulsate 2s infinite;
         }
 
-        /* Stacking containers vertically on smaller screens */
+        /* Medium screens (max-width: 768px) */
         @media (max-width: 768px) {
             body {
-                padding: 0.5rem;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-                text-align: center;
-                margin-bottom: 1rem;
+                flex-direction: column;
+                /* Stack the title and sections vertically */
+                align-items: stretch;
+                /* Ensure the containers stretch across the screen */
             }
 
             .container {
                 flex-direction: column;
+                /* Stack containers (title and sections) */
                 align-items: stretch;
-                gap: 1rem;
+                /* Ensure containers take up full width */
             }
 
             details {
-                flex: 1 1 100%;
                 max-width: 100%;
-                padding: 0.5rem;
-                font-size: 0.9rem;
-            }
-
-            summary {
-                font-size: 0.9rem;
-                padding: 0.5rem;
-            }
-
-            .nested-content {
-                padding: 0.5rem;
-                font-size: 0.9rem;
+                /* Allow details sections to stretch inside their containers */
             }
         }
 
-        /* Further adjustments for smaller screens */
+        /* Smaller screens (max-width: 480px) */
         @media (max-width: 480px) {
             h1 {
                 font-size: 1.2rem;
@@ -218,7 +204,7 @@
             }
         }
 
-        /* Ultra-small screen adjustments */
+        /* Ultra-small screens (max-width: 360px) */
         @media (max-width: 360px) {
             h1 {
                 font-size: 1rem;
