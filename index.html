@@ -152,13 +152,14 @@
 
         /* Add the link styles */
         .pulsating-link {
-            text-decoration:wavy;
+            text-decoration-line: underline;
+            text-decoration-style: wavy;
             text-decoration-color: green;
-            color: inherit;
+            text-decoration-thickness: 1px;
+            color: green;
             display: inline-block;
             animation: pulsate 2s infinite;
         }
-
 
         /* Media Query for Responsive Design */
         @media (max-width: 768px) {
@@ -286,7 +287,8 @@
                     creating immersive experiences that mix real physical entities with imaginary ideas.</p>
 
                 <p>I explore this concept through the project, <a href="https://viltu08.github.io/Quantum-Type-Lab/"
-                    class="pulsating-link" target="_blank">Quantum Type Lab</a>, a digital gallery for experimental typography where I
+                        class="pulsating-link" target="_blank">Quantum Type Lab</a>, a digital gallery for experimental
+                    typography where I
                     overlap design and scientific principles, exploring intersections of atomic structures and the
                     transformative potential of variable typefaces. This project treats typography as a mutable
                     entity—one that, like atoms, can exist in different states: ground, excited, or ionized. Typography
