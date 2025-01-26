@@ -161,11 +161,75 @@
             animation: pulsate 2s infinite;
         }
 
-        /* Media Query for Responsive Design */
+        /* Adjust text and layout for medium screens */
         @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+                padding: 0.5rem;
+            }
+
+            summary {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
+
             details {
                 flex: 1 1 calc(100% - 2rem);
-                max-width: none;
+                max-width: 100%;
+                padding: 0.5rem;
+            }
+
+            .nested-content {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Further scaling for small screens */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            summary {
+                font-size: 0.8rem;
+                padding: 0.4rem;
+            }
+
+            details {
+                flex: 1 1 calc(100% - 1rem);
+                padding: 0.4rem;
+            }
+
+            .nested-content {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Ultra-small screen adjustments */
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1rem;
+                text-align: left;
+            }
+
+            summary {
+                font-size: 0.7rem;
+                padding: 0.3rem;
+            }
+
+            details {
+                flex: 1 1 100%;
+                padding: 0.3rem;
+            }
+
+            .nested-content {
+                padding: 0.3rem;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -354,7 +418,8 @@
                 <p>Complexity feels inherent to the way I work, think, and write. My brain energizes like a
                     multiverse-traveling spaceship, imagining hundreds of ways to approach a single topic. Sometimes I
                     choose structure to create clarity and accessibility. For instance, in my project <a
-                        href="https://vishakharuhela.com/The-Measure-of-Victory" target="_blank" class="pulsating-link">The
+                        href="https://vishakharuhela.com/The-Measure-of-Victory" target="_blank"
+                        class="pulsating-link">The
                         Measure of Victory</a>, I create ten plates using a data visualization approach to dissect
                     everything I know about the Trajan Column. Here, complexity lies in the layered narrative, ranging
                     from the material composition to the history and emotions tied to its existence. Yet, the final
