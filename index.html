@@ -161,11 +161,29 @@
             animation: pulsate 2s infinite;
         }
 
-        /* Adjust text and layout for medium screens */
+        /* Stacking containers vertically on smaller screens */
         @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
             h1 {
                 font-size: 1.5rem;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+
+            .container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            details {
+                flex: 1 1 100%;
+                max-width: 100%;
                 padding: 0.5rem;
+                font-size: 0.9rem;
             }
 
             summary {
@@ -173,23 +191,14 @@
                 padding: 0.5rem;
             }
 
-            details {
-                flex: 1 1 calc(100% - 2rem);
-                max-width: 100%;
-                padding: 0.5rem;
-            }
-
             .nested-content {
                 padding: 0.5rem;
+                font-size: 0.9rem;
             }
         }
 
-        /* Further scaling for small screens */
+        /* Further adjustments for smaller screens */
         @media (max-width: 480px) {
-            body {
-                padding: 0.5rem;
-            }
-
             h1 {
                 font-size: 1.2rem;
             }
@@ -200,7 +209,6 @@
             }
 
             details {
-                flex: 1 1 calc(100% - 1rem);
                 padding: 0.4rem;
             }
 
@@ -223,7 +231,6 @@
             }
 
             details {
-                flex: 1 1 100%;
                 padding: 0.3rem;
             }
 
