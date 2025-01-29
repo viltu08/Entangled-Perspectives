@@ -162,6 +162,46 @@
             animation: pulsate 2s infinite;
         }
 
+        .pattern-container {
+            display: grid;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .shape {
+            width: 10px;
+            height: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .shape:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        .shape.clicked {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .circle {
+            background-color: #ff6347;
+            border-radius: 50%;
+        }
+
+        .square {
+            background-color: #32cd32;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 15px solid black;
+        }
+
         /* Medium screens (max-width: 768px) */
         @media (max-width: 768px) {
             body {
@@ -249,6 +289,13 @@
                     <div class="nested-content">
                         <p>Dr. Martin Lorenz, Vishakha Ruhela, </p>
                     </div>
+                </details>
+            </div>
+
+            <div class="nested-content">
+                <details id="portal">
+                    <summary>Visual Nesting Laboratory</summary>
+                    <div class="nested-content" id="portal-content"></div>
                 </details>
             </div>
         </details>
@@ -649,9 +696,8 @@
                     different sentient beings.</p>
 
                 <p>
-                    In my book design project, <a
-                    href="https://vishakharuhela.com/Conscious-Cosmos" target="_blank"
-                    class="pulsating-link">Conscious Cosmos</a>, I explore how I can transfer the control over
+                    In my book design project, <a href="https://vishakharuhela.com/Conscious-Cosmos" target="_blank"
+                        class="pulsating-link">Conscious Cosmos</a>, I explore how I can transfer the control over
                     complexity to the reader. The primary text from Robert Lanza’s Biocentrism offers a revolutionary
                     view of the universe by asking us to view it from a lens of consciousness and biology, in addition
                     to physics, chemistry and mathematics. He uses a mix of storytelling and facts to make the theories
@@ -1101,7 +1147,7 @@
 
 </body>
 <script>
-
+    // Javascript has been generated using AI models
     // Hover color function
     document.querySelectorAll('details').forEach((details) => {
         details.addEventListener('toggle', () => {
@@ -1140,6 +1186,42 @@
 
     // Run the highlight function after the page is loaded
     window.onload = highlightWords;
+
+    // Visual nesting shape generator
+
+    function getRandomShape() {
+        const shapes = ['circle', 'square', 'triangle'];
+        return shapes[Math.floor(Math.random() * shapes.length)];
+    }
+
+    function generatePattern(container) {
+        const patternContainer = document.createElement('div');
+        patternContainer.className = 'pattern-container';
+        const columns = Math.floor(Math.random() * 5) + 2;
+        patternContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
+        for (let i = 0; i < Math.floor(Math.random() * 9) + 4; i++) {
+            const shape = document.createElement('div');
+            shape.className = `shape ${getRandomShape()}`;
+            shape.addEventListener('click', () => {
+                shape.classList.add('clicked');
+                const newPatternContainer = document.createElement('div');
+                newPatternContainer.className = 'pattern-container';
+                generatePattern(newPatternContainer);
+                container.appendChild(newPatternContainer);
+            });
+            patternContainer.appendChild(shape);
+        }
+        container.appendChild(patternContainer);
+    }
+
+    const portalContent = document.getElementById('portal-content');
+    const portalDetails = document.getElementById('portal');
+    portalDetails.addEventListener('toggle', () => {
+        if (portalDetails.open && portalContent.children.length === 0) {
+            generatePattern(portalContent);
+        }
+    });
 
 </script>
 
